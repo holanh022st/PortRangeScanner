@@ -169,9 +169,6 @@ class ExclusionList:
         except (IOError, OSError, PermissionError) as e:
             security_logger.error(f"Failed to save exclusion list to {file_path}: {e}")
             raise
-        except Exception as e:
-            security_logger.error(f"Unexpected error saving exclusion list: {e}")
-            raise
     
     @classmethod
     def load_from_file(cls, file_path: str) -> 'ExclusionList':

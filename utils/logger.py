@@ -8,7 +8,7 @@ from pathlib import Path
 
 try:
     from config import LOGS_DIR, LOG_LEVEL, LOG_FORMAT, LOG_MAX_BYTES, LOG_BACKUP_COUNT
-except ImportError as e:
+except ImportError:
     # Fallback configuration if config module is not available
     import os
     LOGS_DIR = Path("logs")

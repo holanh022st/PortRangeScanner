@@ -333,9 +333,7 @@ class MainWindow(QMainWindow):
         self.tabs.setCurrentWidget(self.dashboard)
         
         if self.current_user:
-            audit_logger.log_event("SCAN_START", self.current_user.username, {
-                "timestamp": str(datetime.now())
-            })
+            audit_logger.log_event("SCAN_START", self.current_user.username, {})
     
     def on_scan_completed(self, results):
         """Handle scan completed event."""
