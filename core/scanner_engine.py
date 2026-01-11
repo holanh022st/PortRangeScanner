@@ -198,13 +198,13 @@ class PortScanner:
                 
             except socket.timeout:
                 state = PORT_STATE_TIMEOUT
-            except socket.error as e:
+            except (socket.error, OSError, ConnectionError) as e:
                 if "reset" in str(e).lower():
                     state = PORT_STATE_RESET
                 else:
                     state = PORT_STATE_FILTERED
             except Exception as e:
-                scanner_logger.error(f"Error scanning {host}:{port} - {e}")
+                scanner_logger.error(f"Unexpected error scanning {host}:{port} - {type(e).__name__}: {e}")
                 state = PORT_STATE_FILTERED
         
         response_time = time.time() - start_time

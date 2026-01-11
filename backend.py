@@ -161,10 +161,17 @@ class ExclusionList:
             "require_explicit_allow": self.require_explicit_allow,
         }
         
-        with open(file_path, 'w') as f:
-            json.dump(data, f, indent=2)
-        
-        security_logger.info(f"Exclusion list saved to {file_path}")
+        try:
+            with open(file_path, 'w') as f:
+                json.dump(data, f, indent=2)
+            
+            security_logger.info(f"Exclusion list saved to {file_path}")
+        except (IOError, OSError, PermissionError) as e:
+            security_logger.error(f"Failed to save exclusion list to {file_path}: {e}")
+            raise
+        except Exception as e:
+            security_logger.error(f"Unexpected error saving exclusion list: {e}")
+            raise
     
     @classmethod
     def load_from_file(cls, file_path: str) -> 'ExclusionList':

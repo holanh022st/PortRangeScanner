@@ -229,15 +229,29 @@ def validate_file_path(file_path: str) -> Tuple[bool, Optional[str]]:
         Tuple of (is_valid, error_message)
     """
     import os
+    from pathlib import Path
     
-    # Check for path traversal attempts
-    if ".." in file_path:
-        return False, "Path traversal not allowed"
+    try:
+        # Resolve to absolute canonical path to prevent traversal attacks
+        requested_path = Path(file_path).resolve()
+        
+        # Get current working directory as allowed base
+        base_path = Path.cwd().resolve()
+        
+        # Check if resolved path is within allowed directory
+        try:
+            requested_path.relative_to(base_path)
+        except ValueError:
+            # Path is outside allowed directory
+            return False, "Path must be within current directory"
+        
+        # Check for sensitive locations
+        sensitive_paths = ["/etc", "/sys", "/proc", "C:\\Windows", "C:\\System32"]
+        for sensitive in sensitive_paths:
+            if str(requested_path).startswith(sensitive):
+                return False, f"Access to {sensitive} not allowed"
+        
+        return True, None
     
-    # Check for absolute paths to sensitive locations
-    sensitive_paths = ["/etc", "/sys", "/proc", "C:\\Windows", "C:\\System32"]
-    for sensitive in sensitive_paths:
-        if file_path.startswith(sensitive):
-            return False, f"Access to {sensitive} not allowed"
-    
-    return True, None
+    except Exception as e:
+        return False, f"Path validation error: {e}"

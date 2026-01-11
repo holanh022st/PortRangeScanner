@@ -5,7 +5,7 @@ Main application window for Enterprise Port Scanner.
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
     QTabWidget, QMenuBar, QMenu, QToolBar, QStatusBar, QMessageBox,
-    QFileDialog, QLabel
+    QFileDialog, QLabel, QApplication
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QThread
 from PyQt6.QtGui import QAction
@@ -249,8 +249,9 @@ class MainWindow(QMainWindow):
             audit_logger.log_event("LOGIN", self.current_user.username, {})
             app_logger.info(f"User logged in: {self.current_user.username}")
         else:
-            # Exit if login cancelled
-            sys.exit(0)
+            # Close application gracefully if login cancelled
+            app_logger.info("Login cancelled by user")
+            QApplication.quit()
     
     def new_scan(self):
         """Show new scan dialog."""

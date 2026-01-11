@@ -50,7 +50,11 @@ class LoginDialog(QDialog):
         
         self.username_input = QLineEdit()
         self.username_input.setPlaceholderText("Enter username")
-        self.username_input.setText("admin")  # Default for testing
+        # Note: Default credentials are for demo/development only
+        # Remove these lines in production deployment
+        import os
+        if os.getenv("SCANNER_DEV_MODE", "false").lower() == "true":
+            self.username_input.setText("admin")  # Development only
         layout.addWidget(self.username_input)
         
         # Password
@@ -60,7 +64,8 @@ class LoginDialog(QDialog):
         self.password_input = QLineEdit()
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
         self.password_input.setPlaceholderText("Enter password")
-        self.password_input.setText("admin123")  # Default for testing
+        if os.getenv("SCANNER_DEV_MODE", "false").lower() == "true":
+            self.password_input.setText("admin123")  # Development only
         layout.addWidget(self.password_input)
         
         # Buttons

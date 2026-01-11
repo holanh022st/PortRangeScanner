@@ -5,7 +5,18 @@ Logging configuration for Enterprise Port Scanner.
 import logging
 import logging.handlers
 from pathlib import Path
-from config import LOGS_DIR, LOG_LEVEL, LOG_FORMAT, LOG_MAX_BYTES, LOG_BACKUP_COUNT
+
+try:
+    from config import LOGS_DIR, LOG_LEVEL, LOG_FORMAT, LOG_MAX_BYTES, LOG_BACKUP_COUNT
+except ImportError as e:
+    # Fallback configuration if config module is not available
+    import os
+    LOGS_DIR = Path("logs")
+    LOG_LEVEL = "INFO"
+    LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    LOG_MAX_BYTES = 10 * 1024 * 1024
+    LOG_BACKUP_COUNT = 5
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def setup_logger(name: str, log_file: str = None) -> logging.Logger:
